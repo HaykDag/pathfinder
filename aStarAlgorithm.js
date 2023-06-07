@@ -1,6 +1,8 @@
 
 
-
+//This is the same dijkstar Algorithm with one difference
+//we make an educated guess and update the neihbour's distance considering
+//how far is neihbour from the end node
 const aStar = (grid,startNode,endNode)=>{
     //if given start poin and end point are the same just return the start point;
     if(startNode.row === endNode.row && startNode.col === endNode.col) return [startNode];
