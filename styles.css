@@ -1,0 +1,28 @@
+body{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+canvas{
+    margin-top: 15px;
+    background-color: #333;
+    border: 3px solid green;
+}
+.btn-cnt{
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    
+    align-items: center;
+    gap: 10px;
+}
+button{
+    font-size: 1rem;
+    padding: 5px;
+    border-radius: 5px;
+    width: 150px;
+    height: 30px;
+    background-color: #333;
+    color: white;
+}
