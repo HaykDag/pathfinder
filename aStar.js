@@ -71,7 +71,7 @@ const Neighbours = (node,grid)=>{
     //we will use prev property of the end node to backtrack to our start node
     //it will work like a link list.
     for(const unvisitedNode of unvisitedNeighbours){
-        unvisitedNode.distance = node.distance+1+heuristicValue(unvisitedNode,endNode);
+        unvisitedNode.distance = node.distance+1+heuristicValue(unvisitedNode,endNode)*1.5;
         unvisitedNode.prev = node;
     }
 }

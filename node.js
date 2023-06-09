@@ -54,7 +54,7 @@ class Node {
         }else{
             ctx.fillStyle = "#333";
             ctx.fill();
-            ctx.strokeStyle = "white"
+            ctx.strokeStyle = "#333"
             ctx.stroke();
         }
     }

@@ -2,20 +2,23 @@
 //canvas size , node size, rows and cols are depend from each other
 //nodeSize*columns===canvasWidth
 //nodeSize*rows===canvasHeigth
+// window.addEventListener("resize",(event)=>{
+//     canvas.width = event.target.innerWidth
+// })
 const settings = {
-    canvasWidth: 600,
-    canvasHeight: 450,
-    rows: 15,
-    columns: 20,
+    canvasWidth: 900,
+    canvasHeight:450,
+    rows: 30,
+    columns: 60,
     startNode:{
-        row:1,
-        col:1
+        row:10,
+        col:15
     },
     endNode:{
         row:10,
-        col:15,
+        col:50
     },
-    nodeSize:30,//make this getter canvasWith/rows or make rows and cols get
+    nodeSize:15,//make this getter canvasWith/rows or make rows and cols get
 }
 
 //get canvas , context, set width and heigth
@@ -28,6 +31,8 @@ canvas.height = settings.canvasHeight;
 const dijkstraBtn = document.getElementById("dijkstraBtn");
 const aStarBtn = document.getElementById("A*Btn")
 const resetBtn = document.getElementById("resetBtn");
+const info = document.getElementById("info");
+const infoShort = document.getElementById("infoShort");
 
 //make 2D empty array by rows and cols
 const grid = Array(settings.rows).fill().map(()=>Array(settings.columns).fill());
@@ -48,7 +53,7 @@ dijkstraBtn.addEventListener("click",()=>{
     //as now we have all the visitedNodes and the shortesPath
     //we can animate them by just iterating first by visitedNodes array
     //afther that iterate by shortes path and visualize them by setting timeOut
-    animate(visitedNodes,shortestPath)
+    animate(visitedNodes,shortestPath);
 });
 aStarBtn.addEventListener("click",()=>{
     const visitedNodes = aStar(grid,startNode,endNode);
@@ -56,8 +61,9 @@ aStarBtn.addEventListener("click",()=>{
     const shortestPath = getShortestPath(visitedNodes[visitedNodes.length-1]);
 
     animate(visitedNodes,shortestPath)
-})
-//resetind the board, just calling initializeGrid to reset everything
+});
+
+//reseting the board, just calling initializeGrid to reset everything
 resetBtn.addEventListener("click",()=>{
     initializeGrid(settings.rows,settings.columns);
 })
@@ -80,9 +86,10 @@ const animate = (visitedNodes,shortestPath)=>{
                         //set them isShortestPath true and then use the draw method
                         shortestPath[j].isShortestPath = true;
                         shortestPath[j].draw(ctx);
+                        infoShort.innerText = `Shortest path:${j+1}`;
                     },50*j)
                 }
-            },50*i)
+            },10*i)
             return;
         }
         setTimeout(()=>{
@@ -90,8 +97,10 @@ const animate = (visitedNodes,shortestPath)=>{
             //set them visited and then use the draw method
             visitedNodes[i].isVisited = true;
             visitedNodes[i].draw(ctx);
-        },50*i)
+            info.innerText = `Explored nodes:${i+1}`;
+        },10*i)
     }
+    
 }
 
 //use this variable to draw walls, drag startingNode and endingNode
@@ -169,7 +178,7 @@ window.addEventListener('mousemove',(event)=>{
 //that points to the node that was before it in the shortest path.
 const getShortestPath = (endPoint,path=[])=>{
     //base case
-    if(endPoint===startNode) return path;
+    if(endPoint===startNode || !endPoint) return path;
     //unshift adds elements to the start of the array
     //in the end the endPoint will be in the end 
     path.unshift(endPoint);
