@@ -6,19 +6,19 @@
 //     canvas.width = event.target.innerWidth
 // })
 const settings = {
-    canvasWidth: 900,
-    canvasHeight:450,
-    rows: 30,
-    columns: 60,
+    canvasWidth: 800,
+    canvasHeight:400,
+    rows: 20,
+    columns: 40,
     startNode:{
-        row:10,
-        col:15
+        row:7,
+        col:5
     },
     endNode:{
-        row:10,
-        col:50
+        row:7,
+        col:20
     },
-    nodeSize:15,//make this getter canvasWith/rows or make rows and cols get
+    nodeSize:25,//make this getter canvasWith/rows or make rows and cols get
 }
 
 //get canvas , context, set width and heigth
