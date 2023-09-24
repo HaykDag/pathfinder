@@ -6,10 +6,10 @@
 //     canvas.width = event.target.innerWidth
 // })
 const settings = {
-    canvasWidth: 800,
-    canvasHeight:400,
-    rows: 20,
-    columns: 40,
+    canvasWidth: 600,
+    canvasHeight:300,
+    rows: 15,
+    columns: 30,
     startNode:{
         row:7,
         col:5
@@ -33,6 +33,8 @@ const aStarBtn = document.getElementById("A*Btn")
 const resetBtn = document.getElementById("resetBtn");
 const info = document.getElementById("info");
 const infoShort = document.getElementById("infoShort");
+const sizeBtn = document.getElementById('size'); 
+
 
 //make 2D empty array by rows and cols
 const grid = Array(settings.rows).fill().map(()=>Array(settings.columns).fill());
@@ -40,6 +42,16 @@ const grid = Array(settings.rows).fill().map(()=>Array(settings.columns).fill())
 let startNode = null;
 let endNode = null;
 initializeGrid(settings.rows,settings.columns);
+
+sizeBtn.addEventListener('change',(event)=>{
+    settings.nodeSize = event.target.value;
+    settings.canvasHeight = settings.nodeSize*settings.rows;
+    settings.canvasWidth = settings.nodeSize*settings.columns;
+    
+    canvas.width = settings.canvasWidth;
+    canvas.height = settings.canvasHeight;
+    initializeGrid(settings.rows,settings.columns);
+})
 
 //add listener on the pathfinder button
 //when clicked call the dijkstra function
@@ -128,8 +140,29 @@ window.addEventListener("mousedown",(event)=>{
     }
 });
 
+document.body.addEventListener("touchstart",(event)=>{
+    let mousePos = getTouchPos(canvas, event);
+    if(event.target.id === "myCanvas" ){
+        initialSelectedRow = Math.floor(mousePos.y/settings.nodeSize);
+        initialSelectedCol = Math.floor(mousePos.x/settings.nodeSize);
+
+        if(grid[initialSelectedRow][initialSelectedCol].isStartNode){
+            startNodeSelected = true;
+        }else if(grid[initialSelectedRow][initialSelectedCol].isEndNode){
+            endNodeSelected = true
+        }
+        isMousedown = true;
+    }
+},{passive:false});
+
 //reset everything onMouseUp
 window.addEventListener('mouseup',()=>{
+    isMousedown = false;
+    startNodeSelected = false;
+    endNodeSelected = false;
+});
+
+document.body.addEventListener('touchend',()=>{
     isMousedown = false;
     startNodeSelected = false;
     endNodeSelected = false;
@@ -173,6 +206,41 @@ window.addEventListener('mousemove',(event)=>{
    }
 })
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+document.body.addEventListener('touchmove',(event)=>{
+    if(isMousedown){
+        let mousePos = getTouchPos(canvas, event);
+         selectedRow = Math.floor(mousePos.y/settings.nodeSize);
+         selectedCol = Math.floor(mousePos.x/settings.nodeSize);
+
+         if(startNodeSelected){
+             for(let rows of grid){
+                 for(let node of rows){
+                     node.isStartNode = false;
+                     node.draw(ctx)
+                 }
+             }
+             grid[selectedRow][selectedCol].isStartNode = true;
+             startNode = grid[selectedRow][selectedCol];
+             grid[selectedRow][selectedCol].draw(ctx)
+         }else if(endNodeSelected){
+             for(let rows of grid){
+                 for(let node of rows){
+                     node.isEndNode = false;
+                     node.draw(ctx)
+                 }
+             }
+             grid[selectedRow][selectedCol].isEndNode = true;
+             endNode = grid[selectedRow][selectedCol];
+             grid[selectedRow][selectedCol].draw(ctx)
+         }
+         else{
+             grid[selectedRow][selectedCol].isWall = true;
+             grid[selectedRow][selectedCol].draw(ctx)
+         } 
+    }
+ },{passive:false})
+//////////////////////////////////////////////////////////////////////////////////////////////
 //get the shortest path using recursion
 //the endPoint passed the function is a node with prev property
 //that points to the node that was before it in the shortest path.
@@ -210,3 +278,28 @@ function initializeGrid  (rows,columns){
         }
     }
 }
+
+
+function getTouchPos(canvasDom, touchEvent) {
+    var rect = canvasDom.getBoundingClientRect();
+    return {
+      x: Math.floor(touchEvent.touches[0].clientX - rect.left),
+      y: Math.floor(touchEvent.touches[0].clientY - rect.top)
+    };
+  }
+  // Prevent scrolling when touching the canvas
+document.body.addEventListener("touchstart", function (e) {
+    if (e.target === canvas) {
+      e.preventDefault();
+    }
+  }, false);    
+  document.body.addEventListener("touchend", function (e) {
+    if (e.target == canvas) {
+      e.preventDefault();
+    }
+  }, false);
+  document.body.addEventListener("touchmove", function (e) {
+    if (e.target == canvas) {
+      e.preventDefault();
+    }
+  }, false);
