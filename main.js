@@ -76,7 +76,11 @@ aStarBtn.addEventListener("click",()=>{
 });
 
 //reseting the board, just calling initializeGrid to reset everything
+const timeOutIds = [];
 resetBtn.addEventListener("click",()=>{
+    timeOutIds.forEach((id)=>{
+        clearTimeout(id)
+    })
     initializeGrid(settings.rows,settings.columns);
 })
 
@@ -90,27 +94,30 @@ const animate = (visitedNodes,shortestPath)=>{
             if(shortestPath[shortestPath.length-1]!==endNode) return;
             //this timeOut and the other One for visitedNodes should be set the same
             //to show synchronously
-            setTimeout(()=>{
+            const timeoutid1 = setTimeout(()=>{
                 for(let j = 0;j<shortestPath.length;j++){
                     //this timeout can be set anything
-                    setTimeout(()=>{
+                    const timeoutid2 = setTimeout(()=>{
                         //go by nodes in the shortestPath array one by one
                         //set them isShortestPath true and then use the draw method
                         shortestPath[j].isShortestPath = true;
                         shortestPath[j].draw(ctx);
                         infoShort.innerText = `Shortest path:${j+1}`;
                     },50*j)
+                    timeOutIds.push(timeoutid2)
                 }
             },10*i)
+            timeOutIds.push(timeoutid1)
             return;
         }
-        setTimeout(()=>{
+        const timeoutid3 = setTimeout(()=>{
             //go by visited nodes in order one by one
             //set them visited and then use the draw method
             visitedNodes[i].isVisited = true;
             visitedNodes[i].draw(ctx);
             info.innerText = `Explored nodes:${i+1}`;
         },10*i)
+        timeOutIds.push(timeoutid3)
     }
     
 }
